@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6fa;
+        }
+        .sidebar {
+            position: fixed;
+            left: 0; top: 0; bottom: 0;
+            width: 220px;
+            background: #232d3b;
+            color: #fff;
+            padding-top: 32px;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.04);
+        }
+        .sidebar h2 {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 32px;
+            letter-spacing: 2px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 18px 0;
+        }
+        .sidebar ul li a {
+            color: #bfc9da;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 32px;
+            display: flex;
+            align-items: center;
+            transition: background 0.2s, color 0.2s;
+        }
+        .sidebar ul li a:hover, .sidebar ul li.active a {
+            background: #2e3b4e;
+            color: #fff;
+            border-left: 4px solid #55acee;
+        }
+        .sidebar ul li a i {
+            margin-right: 14px;
+            font-size: 18px;
+        }
+        .main-content {
+            margin-left: 220px;
+            padding: 40px 40px;
+        }
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+        .dashboard-header h1 {
+            color: #232d3b;
+            font-size: 28px;
+            margin: 0;
+        }
+        .dashboard-header .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .dashboard-header .user-info i {
+            font-size: 22px;
+            color: #55acee;
+            margin-right: 10px;
+        }
+        .dashboard-header .user-info span {
+            font-size: 18px;
+            color: #232d3b;
+            font-weight: 600;
+        }
+        .dashboard-box {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            padding: 36px 32px;
+            margin-bottom: 32px;
+        }
+        .dashboard-box h2 {
+            color: #2980b9;
+            font-size: 22px;
+            margin-bottom: 18px;
+        }
+        .dashboard-box p {
+            color: #555;
+            font-size: 16px;
+        }
+        .logout-link {
+            display: inline-block;
+            margin-top: 18px;
+            color: #2980b9;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .logout-link:hover {
+            text-decoration: underline;
+        }
+        .dashboard-btn {
+            display: inline-block;
+            background: #55acee;
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 18px;
+            transition: background 0.2s;
+        }
+        .dashboard-btn:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2><i class="fa fa-comments"></i> MyApp</h2>
+        <ul>
+            <li><a href="{{ url_for('routes.home') }}"><i class="fa fa-home"></i>Home</a></li>
+            <li><a href="{{ url_for('routes.encrypt') }}"><i class="fa fa-lock"></i>Encrypt</a></li>
+            <li><a href="{{ url_for('routes.decrypt') }}"><i class="fa fa-lock"></i>Decrypt</a></li>
+            <li><a href="{{ url_for('routes.file_encrypt') }}"><i class="fa fa-file-contract"></i>File Encrypt</a></li>
+            <li><a href="{{ url_for('routes.file_decrypt') }}"><i class="fa fa-file-export"></i>File Decrypt</a></li>
+            <li><a href="{{ url_for('routes.index') }}"><i class="fa fa-comments"></i>Chat Room</a></li>
+            <li class="active"><a href="{{ url_for('routes.dashboard') }}"><i class="fa fa-tachometer-alt"></i>Dashboard</a></li>
+            <li><a href="{{ url_for('routes.logout') }}"><i class="fa fa-sign-out-alt"></i>Logout</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="dashboard-header">
+            <h1>Dashboard</h1>
+            <div class="user-info">
+                <i class="fa fa-user-circle"></i>
+                <span>{{ current_user.username }}</span>
+            </div>
+        </div>
+        <div class="dashboard-box">
+            <h2>Welcome back, {{ current_user.username }}!</h2>
+            <p>This is your dashboard. You can access the chat room, view your profile, or logout using the sidebar.</p>
+            <a class="dashboard-btn" href="{{ url_for('routes.index') }}">Go to Chat Room</a>
+            <a class="logout-link" href="{{ url_for('routes.logout') }}">Logout</a>
+        </div>
+    </div>
+</body>
+</html>

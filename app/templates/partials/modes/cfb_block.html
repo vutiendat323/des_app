@@ -1,0 +1,55 @@
+<div class="card modern-card mb-2">
+    <div class="card-header block-header" id="blockHeading{{ block_idx }}">
+        <h6 class="mb-0">
+            <button class="btn btn-link collapsed w-100 text-left" data-toggle="collapse" data-target="#blockCollapse{{ block_idx }}" aria-expanded="{{ 'true' if loop.first else 'false' }}" aria-controls="blockCollapse{{ block_idx }}">
+                <span class="badge-block"><i class="fa fa-cube"></i> Block {{ block.block_num }}</span>
+            </button>
+        </h6>
+    </div>
+    <div id="blockCollapse{{ block_idx }}" class="collapse {% if loop.first %}show{% endif %}" aria-labelledby="blockHeading{{ block_idx }}" data-parent="#blockAccordion">
+        <div class="card-body">
+            <div><strong>Initial Block:</strong> <code>{{ block.initial_block }}</code></div>
+            
+            {# Keystream Generation Section #}
+            {% if block.keystream_generation is defined %}
+            <div class="mb-3">
+                <div><strong>Initial Permutation:</strong> <code>{{ block.keystream_generation.initial_permutation }}</code></div>
+                {% if block.keystream_generation.l0_r0 is defined %}
+                <div><strong>L<sub>0</sub>:</strong> <code>{{ block.keystream_generation.l0_r0.l0 }}</code></div>
+                <div><strong>R<sub>0</sub>:</strong> <code>{{ block.keystream_generation.l0_r0.r0 }}</code></div>
+                {% endif %}
+                
+                <div class="mt-3">
+                    <strong>Rounds:</strong>
+                    <div id="roundAccordion{{ block_idx }}" class="modern-accordion">
+                    {% if block.keystream_generation.rounds is defined %}
+                        {% for round in block.keystream_generation.rounds %}
+                            {% include 'partials/components/round_details.html' %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-danger">Không có dữ liệu round cho block này.</div>
+                    {% endif %}
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <strong>Final Swap:</strong> <code>{{ block.keystream_generation.final_swap }}</code><br>
+                    <strong>Final Permutation:</strong> <code>{{ block.keystream_generation.final_permutation_inv }}</code>
+                </div>
+            </div>
+            {% endif %}
+
+            {# XOR Operation Section #}
+            {% if block.xor_operation is defined %}
+            <div class="mb-3">
+                <strong>XOR with Plaintext/Ciphertext:</strong>
+                <ul>
+                    <li><strong>Keystream:</strong> <code>{{ block.xor_operation.keystream }}</code></li>
+                    <li><strong>Input:</strong> <code>{{ block.xor_operation.input }}</code></li>
+                    <li><strong>Result:</strong> <code>{{ block.xor_operation.result }}</code></li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div> 

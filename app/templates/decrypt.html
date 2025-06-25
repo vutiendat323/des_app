@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DES Decryption</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6fa; }
+        .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 220px; background: #232d3b; color: #fff; padding-top: 32px; box-shadow: 2px 0 12px rgba(0,0,0,0.04); }
+        .sidebar h2 { text-align: center; font-size: 22px; margin-bottom: 32px; letter-spacing: 2px; }
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar ul li { margin: 18px 0; }
+        .sidebar ul li a { color: #bfc9da; text-decoration: none; font-size: 16px; padding: 10px 32px; display: flex; align-items: center; transition: background 0.2s, color 0.2s; }
+        .sidebar ul li a:hover, .sidebar ul li.active a { background: #2e3b4e; color: #fff; border-left: 4px solid #55acee; }
+        .sidebar ul li a i { margin-right: 14px; font-size: 18px; }
+        .main-content { margin-left: 220px; padding: 60px 40px; min-height: 100vh; }
+        .encrypt-box { background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.07); padding: 40px 32px 32px 32px; max-width: 600px; margin: 40px auto; }
+        .encrypt-box h1 { color: #232d3b; font-size: 28px; margin-bottom: 24px; text-align: center; }
+        .form-group { margin-bottom: 18px; }
+        label { font-weight: 500; margin-bottom: 6px; display: block; color: #232e3c; }
+        input[type="text"], select { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem; background: #f9fafb; margin-top: 4px; }
+        .form-check { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+        .btn-primary { width: 100%; padding: 12px 0; background: #55acee; color: #fff; border: none; border-radius: 6px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; transition: background 0.2s; }
+        .btn-primary:hover { background: #2980b9; }
+        .result-section { margin-top: 28px; text-align: center; }
+        .result-label { font-weight: 500; color: #232e3c; margin-bottom: 8px; }
+        .result-box { background: #f4f7fa; border: 1px solid #d1d5db; border-radius: 6px; padding: 12px; font-family: monospace; word-break: break-all; margin-bottom: 10px; width: 100%; min-height: 40px; font-size: 1.1rem; }
+        .download-link { width: 100%; padding: 12px 0; background: #219150; color: #fff; border: none; border-radius: 6px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; transition: background 0.2s; }
+        .mode-btn { border: 1px solid #bbb; background: #fff; color: #232d3b; padding: 6px 22px; border-radius: 6px; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background 0.2s, color 0.2s; }
+        .mode-btn.active { background: #232d3b; color: #fff; border: 1.5px solid #232d3b; }
+        /* Switch style for toggle */
+        .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
+        .switch-input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #bfc9da; transition: .4s; border-radius: 26px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        .switch-input:checked + .slider { background-color: #55acee; }
+        .switch-input:checked + .slider:before { transform: translateX(20px); }
+        .alert { padding: 12px 18px; border-radius: 6px; margin-bottom: 18px; font-size: 1rem; }
+        .alert-error { background: #ffeaea; color: #d93025; border: 1px solid #f5c2c7; }
+        @media (max-width: 700px) { .sidebar { position: static; width: 100%; } .main-content { margin-left: 0; padding: 24px 0; } .encrypt-box { max-width: 98vw; } }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2><i class="fa fa-lock"></i> DES App</h2>
+        <ul>
+            <li><a href="{{ url_for('routes.home') }}"><i class="fa fa-home"></i>Home</a></li>
+            <li><a href="{{ url_for('routes.login') }}"><i class="fa fa-sign-in-alt"></i>Login</a></li>
+            <li><a href="{{ url_for('routes.register') }}"><i class="fa fa-user-plus"></i>Register</a></li>
+            <li><a href="{{ url_for('routes.encrypt') }}"><i class="fa fa-lock"></i>Encrypt</a></li>
+            <li class="active"><a href="{{ url_for('routes.decrypt') }}"><i class="fa fa-lock"></i>Decrypt</a></li>
+            <li><a href="{{ url_for('routes.file_encrypt') }}"><i class="fa fa-file-contract"></i>File Encrypt</a></li>
+            <li><a href="{{ url_for('routes.file_decrypt') }}"><i class="fa fa-file-export"></i>File Decrypt</a></li>
+            <li><a href="{{ url_for('routes.index') }}"><i class="fa fa-comments"></i>Chat Room</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="encrypt-box">
+            <h1>DES Decryption</h1>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-error">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+            <form method="POST" autocomplete="off">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.ciphertext.label }}
+                    {{ form.ciphertext(size=32, placeholder="Enter ciphertext to decrypt") }}
+                </div>
+                <div class="form-group">
+                    {{ form.key.label }}
+                    {{ form.key(size=32, placeholder="8 bytes key (e.g. 12345678)") }}
+                </div>
+                <div class="form-group">
+                    {{ form.mode.label }}
+                    <div id="mode-toggle" style="display:flex; gap:10px; margin-top:6px;">
+                        <button type="button" class="mode-btn" data-mode="ECB">ECB</button>
+                        <button type="button" class="mode-btn" data-mode="CBC">CBC</button>
+                        <button type="button" class="mode-btn" data-mode="OFB">OFB</button>
+                        <button type="button" class="mode-btn" data-mode="CFB">CFB</button>
+                    </div>
+                    {{ form.mode(class_="form-control", style="display:none;") }}
+                </div>
+                <div class="form-group" id="iv-group">
+                    {{ form.iv.label }}
+                    {{ form.iv(size=32, placeholder="8 bytes IV (for CBC/OFB/CFB)") }}
+                </div>
+                <div class="form-group">
+                    {{ form.input_format.label }}
+                    {{ form.input_format(class_="form-control") }}
+                </div>
+                <div class="form-check">
+                    <label class="switch">
+                        {{ form.verbose(class_="switch-input") }}
+                        <span class="slider"></span>
+                    </label>
+                    <span style="margin-left:12px;">{{ form.verbose.label.text }}</span>
+                </div>
+                <button type="submit" class="btn-primary">Decrypt</button>
+            </form>
+            {% if decrypted_text %}
+            <div class="result-section">
+                <div class="result-label">Decrypted Text:</div>
+                <div class="result-box" id="decryptedText">{{ decrypted_text }}</div>
+                <div style="display: flex; justify-content: center; gap: 12px;">
+                    <button class="btn-primary" style="width:auto;padding:6px 18px;font-size:1rem;" onclick="copyToClipboard()">Copy</button>
+                    {% if download_link %}
+                        <a class="download-link" style="width:auto;padding:6px 18px;font-size:1rem; text-align:center; text-decoration:none; display:inline-block;" href="{{ url_for('routes.download', filename=download_link.split('/')[-1]) }}">Download JSON Log</a>
+                        <a class="btn-primary" style="width:auto;padding:6px 18px;font-size:1rem; text-align:center; text-decoration:none; display:inline-block; background:#9f7aea;" href="{{ url_for('routes.result', filename=download_link.split('/')[-1]) }}">View Algorithm Steps</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <script>
+    function copyToClipboard() {
+        var text = document.getElementById("decryptedText").innerText;
+        navigator.clipboard.writeText(text);
+    }
+    // Toggle Mode buttons and IV field
+    document.addEventListener('DOMContentLoaded', function() {
+        const modeBtns = document.querySelectorAll('.mode-btn');
+        const modeSelect = document.querySelector('select[name="mode"]');
+        const ivGroup = document.getElementById('iv-group');
+        // Set initial state
+        function updateIVandActive(mode) {
+            modeBtns.forEach(btn => btn.classList.remove('active'));
+            let found = false;
+            modeBtns.forEach(btn => {
+                if(btn.dataset.mode === mode) {
+                    btn.classList.add('active');
+                    found = true;
+                }
+            });
+            if(!found) modeBtns[0].classList.add('active');
+            if(mode === 'ECB') {
+                ivGroup.style.display = 'none';
+                document.querySelector('input[name="iv"]').value = '';
+            } else {
+                ivGroup.style.display = '';
+            }
+        }
+        // On page load, sync with select value
+        let currentMode = modeSelect.value;
+        updateIVandActive(currentMode);
+        // Button click event
+        modeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                modeSelect.value = btn.dataset.mode;
+                updateIVandActive(btn.dataset.mode);
+            });
+        });
+        // If user changes select (shouldn't be visible, but for safety)
+        modeSelect.addEventListener('change', function() {
+            updateIVandActive(modeSelect.value);
+        });
+    });
+    </script>
+</body>
+</html>

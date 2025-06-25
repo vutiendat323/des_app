@@ -1,0 +1,77 @@
+{% if round %}
+<div class="card mb-1 modern-card">
+    <div class="card-header round-header p-2" id="roundHeading{{ block_idx }}_{{ round.round }}">
+        <button class="btn btn-link collapsed w-100 text-left"
+            type="button"
+            data-toggle="collapse"
+            data-target="#roundCollapse{{ block_idx }}_{{ round.round }}"
+            aria-expanded="false"
+            aria-controls="roundCollapse{{ block_idx }}_{{ round.round }}">
+            <span class="badge-round"><i class="fa fa-arrow-right"></i> Round {{ round.round }}</span>
+        </button>
+    </div>
+    <div id="roundCollapse{{ block_idx }}_{{ round.round }}"
+         class="collapse"
+         aria-labelledby="roundHeading{{ block_idx }}_{{ round.round }}"
+         data-parent="#roundAccordion{{ block_idx }}">
+        <div class="card-body">
+            {% if loop.first %}
+            <div><strong>L<sub>0</sub>:</strong> <code>{{ round.l_in }}</code></div>
+            <div><strong>R<sub>0</sub>:</strong> <code>{{ round.r_in }}</code></div>
+            {% else %}
+            <div><strong>L<sub>{{ round.round - 1 }}</sub>:</strong> <code>{{ round.l_in }}</code></div>
+            <div><strong>R<sub>{{ round.round - 1 }}</sub>:</strong> <code>{{ round.r_in }}</code></div>
+            {% endif %}
+            <div><strong>F function:</strong></div>
+            <ul>
+                <li><strong>Expansion E:</strong> <code>{{ round.f_function.expansion_e }}</code></li>
+                <li><strong>XOR with Subkey:</strong>
+                    <ul>
+                        <li><strong>R expanded:</strong> <code>{{ round.f_function.xor_with_subkey.r_expanded }}</code></li>
+                        <li><strong>Subkey:</strong> <code>{{ round.f_function.xor_with_subkey.subkey }}</code></li>
+                        <li><strong>Result:</strong> <code>{{ round.f_function.xor_with_subkey.result }}</code></li>
+                    </ul>
+                </li>
+                <li><strong>S-box Substitution:</strong>
+                    <ul>
+                        <li><strong>Input:</strong> <code>{{ round.f_function.sbox_substitution.input }}</code></li>
+                        <li><strong>Output:</strong> <code>{{ round.f_function.sbox_substitution.output }}</code></li>
+                        <li><strong>Details:</strong>
+                            <button class="btn sbox-btn btn-sm mb-2" type="button" data-toggle="collapse" data-target="#sboxTable{{ block_idx }}_{{ round.round }}" aria-expanded="false" aria-controls="sboxTable{{ block_idx }}_{{ round.round }}">
+                                <i class="fa fa-table"></i> Show/Hide S-box Table
+                            </button>
+                            <div class="collapse" id="sboxTable{{ block_idx }}_{{ round.round }}">
+                                <table class="table table-sm table-bordered mt-1">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>S-box</th>
+                                            <th>Input</th>
+                                            <th>Row</th>
+                                            <th>Col</th>
+                                            <th>Output</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for s in round.f_function.sbox_substitution.details %}
+                                        <tr>
+                                            <td>{{ s.sbox }}</td>
+                                            <td><code>{{ s.input }}</code></td>
+                                            <td>{{ s.row_bits }}</td>
+                                            <td>{{ s.col_bits }}</td>
+                                            <td><code>{{ s.output_bin }}</code></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <li><strong>Permutation P:</strong> <code>{{ round.f_function.permutation_p }}</code></li>
+            </ul>
+            <div><strong>L<sub>{{ round.round }}</sub>:</strong> <code>{{ round.l_out }}</code></div>
+            <div><strong>R<sub>{{ round.round }}</sub>:</strong> <code>{{ round.r_out }}</code></div>
+        </div>
+    </div>
+</div>
+{% endif %} 

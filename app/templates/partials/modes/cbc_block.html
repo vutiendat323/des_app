@@ -1,0 +1,74 @@
+<div class="card modern-card mb-2">
+    <div class="card-header block-header" id="blockHeading{{ block_idx }}">
+        <h6 class="mb-0">
+            <button class="btn btn-link collapsed w-100 text-left" data-toggle="collapse" data-target="#blockCollapse{{ block_idx }}" aria-expanded="{{ 'true' if loop.first else 'false' }}" aria-controls="blockCollapse{{ block_idx }}">
+                <span class="badge-block"><i class="fa fa-cube"></i> Block {{ block.block_num }}</span>
+            </button>
+        </h6>
+    </div>
+    <div id="blockCollapse{{ block_idx }}" class="collapse {% if loop.first %}show{% endif %}" aria-labelledby="blockHeading{{ block_idx }}" data-parent="#blockAccordion">
+        <div class="card-body">
+            <div><strong>Initial Block:</strong> <code>{{ block.initial_block }}</code></div>
+            {% if steps.process_type == 'Encryption' and block.xor_operation is defined %}
+                <div class="mb-3">
+                    <strong>XOR Operation:</strong>
+                    <ul>
+                        <li><strong>Plaintext:</strong> <code>{{ block.xor_operation.plaintext }}</code></li>
+                        <li><strong>XOR with:</strong> <code>{{ block.xor_operation.xor_with }}</code></li>
+                        <li><strong>Result:</strong> <code>{{ block.xor_operation.result }}</code></li>
+                    </ul>
+                </div>
+                {% if block.des_encryption is defined %}
+                    <div class="mb-2"><strong>DES Encryption Steps:</strong></div>
+                    <div id="roundAccordion{{ block_idx }}">
+                        {% if block.des_encryption.l0_r0 is defined %}
+                            <div class="mb-2">
+                                <strong>L<sub>0</sub>:</strong> <code>{{ block.des_encryption.l0_r0.l0 }}</code>
+                                <strong>R<sub>0</sub>:</strong> <code>{{ block.des_encryption.l0_r0.r0 }}</code>
+                            </div>
+                        {% endif %}
+                        {% for round in block.des_encryption.rounds %}
+                            {% include 'partials/components/round_details.html' with context %}
+                        {% endfor %}
+                        {% if block.des_encryption.final_swap is defined %}
+                            <div class="mt-2"><strong>Final Swap:</strong> <code>{{ block.des_encryption.final_swap }}</code></div>
+                        {% endif %}
+                        {% if block.des_encryption.final_permutation_inv is defined %}
+                            <div class="mt-2"><strong>Final Permutation<sup>-1</sup>:</strong> <code>{{ block.des_encryption.final_permutation_inv }}</code></div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% elif steps.process_type == 'Decryption' and block.des_decryption is defined %}
+                <div class="mb-2"><strong>DES Decryption Steps:</strong></div>
+                <div id="roundAccordion{{ block_idx }}">
+                    {% if block.des_decryption.l0_r0 is defined %}
+                        <div class="mb-2">
+                            <strong>L<sub>0</sub>:</strong> <code>{{ block.des_decryption.l0_r0.l0 }}</code>
+                            <strong>R<sub>0</sub>:</strong> <code>{{ block.des_decryption.l0_r0.r0 }}</code>
+                        </div>
+                    {% endif %}
+                    {% for round in block.des_decryption.rounds %}
+                        {% set round = round %}
+                        {% include 'partials/components/round_details.html' with context %}
+                    {% endfor %}
+                    {% if block.des_decryption.final_swap is defined %}
+                        <div class="mt-2"><strong>Final Swap:</strong> <code>{{ block.des_decryption.final_swap }}</code></div>
+                    {% endif %}
+                    {% if block.des_decryption.final_permutation_inv is defined %}
+                        <div class="mt-2"><strong>Final Permutation<sup>-1</sup>:</strong> <code>{{ block.des_decryption.final_permutation_inv }}</code></div>
+                    {% endif %}
+                </div>
+                {% if block.xor_operation is defined %}
+                    <div class="mb-3 mt-2">
+                        <strong>XOR Operation:</strong>
+                        <ul>
+                            <li><strong>DES Output:</strong> <code>{{ block.xor_operation.des_output }}</code></li>
+                            <li><strong>XOR with:</strong> <code>{{ block.xor_operation.xor_with }}</code></li>
+                            <li><strong>Result (Plaintext Block):</strong> <code>{{ block.xor_operation.result }}</code></li>
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div> 

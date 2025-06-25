@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            background: #55acee;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+        }
+        .register-container {
+            background: #fff;
+            width: 350px;
+            margin: 80px auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            padding: 36px 32px 28px 32px;
+        }
+        .register-container h2 {
+            text-align: left;
+            color: #2d3e50;
+            margin-bottom: 28px;
+            font-weight: 700;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+        .input-group i {
+            background: #e6eaf0;
+            color: #55acee;
+            padding: 12px 14px;
+            border-radius: 6px 0 0 6px;
+            font-size: 18px;
+        }
+        .input-group input {
+            border: none;
+            outline: none;
+            padding: 12px 10px;
+            border-radius: 0 6px 6px 0;
+            background: #e6eaf0;
+            width: 100%;
+            font-size: 16px;
+        }
+        .register-btn {
+            width: 100%;
+            background: #2980b9;
+            color: #fff;
+            border: none;
+            padding: 14px 0;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .register-btn:hover {
+            background: #1761a0;
+        }
+        .login-link {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #2980b9;
+            text-decoration: none;
+            font-size: 15px;
+        }
+        .login-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-container">
+        <h2>Register</h2>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="input-group">
+                <i class="fa fa-user"></i>
+                {{ form.username(placeholder="Username") }}
+            </div>
+            <div class="input-group">
+                <i class="fa fa-lock"></i>
+                {{ form.password(placeholder="Password") }}
+            </div>
+            {{ form.submit(class_="register-btn") }}
+        </form>
+        <a class="login-link" href="{{ url_for('routes.login') }}">Already have an account? Login</a>
+    </div>
+</body>
+
+</html>
